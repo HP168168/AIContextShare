@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 12px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .brand {
+      font-weight: 700;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+    .status-dot.offline {
+      background: #ef4444;
+      box-shadow: 0 0 6px #ef4444;
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .label {
+      color: #94a3b8;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .value {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 8px;
+      background: #6366f1;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-secondary {
+      width: 100%;
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+    .tip {
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <span class="status-dot" id="statusDot"></span>
+      <span>AIContextShare 胶囊</span>
+    </div>
+    <span id="statusText" style="font-size: 11px; color: #94a3b8;">连接中...</span>
+  </div>
+
+  <div class="card">
+    <div class="label">当前激活项目：</div>
+    <div class="value" id="curProject">加载中...</div>
+  </div>
+
+  <div class="card">
+    <div class="label">本轮待办目标：</div>
+    <div class="value" id="curTodo" style="color: #93c5fd;">加载中...</div>
+  </div>
+
+  <button class="btn-primary" id="btnInjectWeb">
+    <span>⚡ 一键填入网页输入框</span>
+  </button>
+  <button class="btn-secondary" id="btnCaptureSelected">
+    <span>📌 吸取当前网页选中文本为最新结论</span>
+  </button>
+
+  <div class="tip">桌面客户端可按 <kbd>Alt+C</kbd> 呼出悬浮面板</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

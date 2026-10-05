@@ -1,0 +1,16 @@
+{
+  "name": "aicontextshare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect"
+  },
+  "keywords": ["ai", "context", "share", "prompt", "chatgpt", "claude", "deepseek"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^44.5.1"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "AIContextShare - 上下文胶囊助手",
+  "version": "1.0.0",
+  "description": "跨 AI 工具与跨账号的上下文即时共享助手（连接本地 AIContextShare 服务）",
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:39281/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://chat.deepseek.com/*",
+    "https://kimi.moonshot.cn/*",
+    "https://www.doubao.com/*",
+    "https://tongyi.aliyun.com/*",
+    "https://gemini.google.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AIContextShare 胶囊"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://www.doubao.com/*",
+        "https://tongyi.aliyun.com/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIContextShare - 上下文胶囊</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="window-container">
+    <!-- 顶部拖拽标题栏 -->
+    <header class="titlebar">
+      <div class="titlebar-drag">
+        <div class="app-brand">
+          <div class="brand-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <span class="app-title">AIContextShare</span>
+          <span class="badge-capsule">跨工具·跨账号上下文共享</span>
+        </div>
+      </div>
+      <div class="window-controls">
+        <button id="btnSettings" class="icon-btn" title="偏好与导入导出">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button id="btnMinimize" class="icon-btn" title="最小化">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <button id="btnClose" class="icon-btn icon-btn-close" title="隐藏至托盘 (Alt+C 重新呼出)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 项目快速切换 Tab 导航 -->
+    <nav class="project-navbar">
+      <div class="project-tabs" id="projectTabs">
+        <!-- 动态生成项目标签 -->
+      </div>
+      <button id="btnNewProject" class="btn-ghost-sm" title="创建新项目上下文">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>新项目</span>
+      </button>
+    </nav>
+
+    <!-- 主体双栏布局 -->
+    <main class="main-body">
+      <!-- 左侧：上下文编辑与任务状态 (输入区) -->
+      <section class="panel-left">
+        <!-- 目标 AI 工具选择 -->
+        <div class="form-group">
+          <div class="section-label">
+            <span>目标 AI 工具适配风格</span>
+            <span class="sub-tip">自动调整语气与格式</span>
+          </div>
+          <div class="platform-chips" id="platformChips">
+            <button class="chip active" data-platform="universal">
+              <span class="dot dot-indigo"></span>通用交接
+            </button>
+            <button class="chip" data-platform="coding">
+              <span class="dot dot-emerald"></span>代码/工程
+            </button>
+            <button class="chip" data-platform="deepseek">
+              <span class="dot dot-blue"></span>DeepSeek推理
+            </button>
+            <button class="chip" data-platform="claude">
+              <span class="dot dot-purple"></span>Claude高精
+            </button>
+          </div>
+        </div>
+
+        <!-- 当前任务接力卡片 (L3) -->
+        <div class="card-glass task-card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>阶段任务接力 (L3 任务态)</span>
+            </div>
+            <div class="card-actions">
+              <button id="btnCaptureCurrent" class="btn-tiny" title="把剪贴板刚复制的内容设为最新结论 (Alt+S)">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                吸取剪贴板
+              </button>
+              <button id="btnClearConsensus" class="btn-tiny btn-danger-tiny" title="清空本阶段结论">清空</button>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <label class="field-label">前序工具/账号已确定的进展与结论：</label>
+            <textarea id="taskConsensus" rows="3" class="input-glass" placeholder="例如：刚才在 Claude 中确立了架构设计方案 A；已排除了方案 B..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <label class="field-label">本轮在当前 AI 工具中的核心目标 (Todo)：</label>
+            <input type="text" id="taskTodo" class="input-glass" placeholder="例如：评估高并发死锁风险 / 编写核心组件代码">
+          </div>
+        </div>
+
+        <!-- 项目背景底座 (L2) - 可折叠 -->
+        <details class="accordion-glass" id="detailsL2">
+          <summary class="accordion-header">
+            <div class="acc-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+              <span>项目固定底座 (L2 项目信息 & 技术栈规范)</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </summary>
+          <div class="accordion-content">
+            <div class="form-row">
+              <label class="field-label">项目名称：</label>
+              <input type="text" id="projName" class="input-glass">
+            </div>
+            <div class="form-row">
+              <label class="field-label">技术栈与核心架构：</label>
+              <input type="text" id="projTechStack" class="input-glass" placeholder="如 React 18, Vite, TypeScript, TailwindCSS">
+            </div>
+            <div class="form-row">
+              <label class="field-label">业务规则与硬性约束：</label>
+              <textarea id="projRules" rows="2" class="input-glass" placeholder="如 代码务必包含 TypeScript 类型定义，遵循 SOLID 原则"></textarea>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- 右侧：高密度实时预览与注入操作 -->
+      <section class="panel-right">
+        <div class="preview-header">
+          <div class="preview-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span>组装结果预览 (所见即所得)</span>
+          </div>
+          <div class="preview-stats">
+            <span id="charCountBadge" class="badge-pill">0 字</span>
+            <span id="tokenEstBadge" class="badge-pill">约 0 Token</span>
+          </div>
+        </div>
+
+        <div class="preview-box-container">
+          <textarea id="promptPreview" class="preview-textarea" spellcheck="false"></textarea>
+        </div>
+
+        <!-- 模板快捷选择 -->
+        <div class="template-selector-bar">
+          <span class="selector-label">选择套用模板：</span>
+          <select id="templateSelect" class="select-glass">
+            <!-- 动态生成模板 -->
+          </select>
+        </div>
+
+        <!-- 底部主操作区 -->
+        <div class="action-footer">
+          <div class="shortcut-tip">
+            <kbd>Enter</kbd> 注入并粘贴
+            <span class="divider">/</span>
+            <kbd>Alt+C</kbd> 隐藏
+          </div>
+          <div class="action-buttons">
+            <button id="btnCopyOnly" class="btn-secondary" title="仅复制到剪贴板，不隐藏窗口">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>仅复制</span>
+            </button>
+            <button id="btnInject" class="btn-primary" title="一键粘贴至当前目标输入框 (Enter)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              <span>一键注入 (Enter)</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 设置与数据管理抽屉模态框 (隐藏) -->
+    <div id="settingsModal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>全局偏好与配置管理</h3>
+          <button id="btnCloseModal" class="icon-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label class="field-label">全局默认角色 (Role)：</label>
+            <input type="text" id="settingRole" class="input-glass">
+          </div>
+          <div class="form-row">
+            <label class="field-label">全局回答约束 (Constraints)：</label>
+            <textarea id="settingConstraints" rows="2" class="input-glass"></textarea>
+          </div>
+          <div class="form-row checkbox-row">
+            <label class="checkbox-container">
+              <input type="checkbox" id="settingAutoPaste" checked>
+              <span class="checkmark"></span>
+              注入时自动模拟 Ctrl+V 粘贴至光标所在位置
+            </label>
+          </div>
+          
+          <div class="modal-divider"></div>
+
+          <div class="backup-actions">
+            <div class="backup-info">
+              <span class="title">本地数据备份</span>
+              <span class="desc">所有项目背景与配置完全存储在本地，不上传云端</span>
+            </div>
+            <div class="btn-group">
+              <button id="btnExport" class="btn-secondary-sm">导出 JSON</button>
+              <button id="btnImport" class="btn-secondary-sm">导入 JSON</button>
+            </div>
+          </div>
+
+          <div class="modal-divider"></div>
+
+          <div class="helper-info">
+            <p>💡 <b>支持快捷键：</b></p>
+            <ul>
+              <li><kbd>Alt + C</kbd>：无论何时何地，一键呼出/隐藏胶囊面板</li>
+              <li><kbd>Alt + S</kbd>：在任意软件选中文本复制后，按此键直接吸入当前项目最新结论</li>
+              <li><kbd>Enter</kbd>：在面板中直接回车触发注入并贴入目标光标处</li>
+              <li><kbd>Esc</kbd>：快速收起隐藏面板</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新建项目专用模态框 -->
+    <div id="newProjectModal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <h3 style="font-size:13px;font-weight:600;">创建新项目上下文</h3>
+          </div>
+          <button id="btnCloseNewProjModal" class="icon-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label class="field-label">项目名称 <span style="color:#ef4444">*</span>：</label>
+            <input type="text" id="newProjNameInput" class="input-glass" placeholder="例如：自研智能客服系统 / 论文写作与润色" autofocus>
+          </div>
+          <div class="form-row">
+            <label class="field-label">技术栈 / 架构背景（可选）：</label>
+            <input type="text" id="newProjTechInput" class="input-glass" placeholder="例如：Vue3, Vite, Pinia, Element-Plus">
+          </div>
+          <div class="form-row">
+            <label class="field-label">业务规则 / 输出约束（可选）：</label>
+            <textarea id="newProjRulesInput" rows="2" class="input-glass" placeholder="例如：严格要求 TypeScript，函数必须有 JSDoc 注释"></textarea>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
+            <button id="btnCancelNewProj" class="btn-secondary-sm">取消 (Esc)</button>
+            <button id="btnConfirmNewProj" class="btn-primary" style="padding:6px 14px;font-size:11.5px;">创建项目 (Enter)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部微提示 Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
